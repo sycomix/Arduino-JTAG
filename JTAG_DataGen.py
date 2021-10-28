@@ -83,6 +83,7 @@ def main():
     StackOutControl.set_value(1)
     CLK.set_value(0)
     InsRegControl.set_value(0)
+    MemWriteControl.set_value(1)
     Data_Bank.append(JTAG_Data.copy())
 
 
@@ -95,23 +96,20 @@ def main():
     HighJumpRegLoad.set_value(0)
     Data_Bank.append(JTAG_Data.copy())
 
+    #preset the jump buffer
     LowJumpRegLoad.set_value(1)
     HighJumpRegLoad.set_value(1)
-    Data_Bank.append(JTAG_Data.copy())
+    JumpEnable.set_value(1)
 
-    LowJumpRegLoad.set_value(0)
-    HighJumpRegLoad.set_value(0)
-    MemWriteControl.set_value(1)
     Data_Bank.append(JTAG_Data.copy())
 
 
     #preset_the_counter
-    JumpEnable.set_value(1)
-    Data_Bank.append(JTAG_Data.copy())
     Count.set_value(1)
     Data_Bank.append(JTAG_Data.copy())
-    Count.set_value(0) #now the program counter is at 0
     JumpEnable.set_value(0)
+    LowJumpRegLoad.set_value(0)
+    HighJumpRegLoad.set_value(0)
     Data_Bank.append(JTAG_Data.copy())
 
     instructions = read_binaries(sys.argv[1])
@@ -119,47 +117,32 @@ def main():
         #sets the bus
         for bit in range(len(Main_Bus)):
             Main_Bus[bit].set_value(int(instruction[-(bit+1)]))
-        Data_Bank.append(JTAG_Data.copy())
-
-        # InsRegControl.set_value(1)
-        # Data_Bank.append(JTAG_Data.copy())
-        # InsRegControl.set_value(0)
+        Count.set_value(0)
         MemWriteControl.set_value(0)
+
         Data_Bank.append(JTAG_Data.copy())
 
+        #might need a do nothing state here
+
+        #next meme addr
         MemWriteControl.set_value(1) #just stored it in memory
-        Data_Bank.append(JTAG_Data.copy())
-
         Count.set_value(1)
-        Data_Bank.append(JTAG_Data.copy())
-
-        Count.set_value(0) #incremeneted the program counter
         Data_Bank.append(JTAG_Data.copy())
 
     #set the program counter to the inital state
     for signal in Main_Bus:
         signal.set_value(1)
-
-    LowJumpRegLoad.set_value(0)
-    HighJumpRegLoad.set_value(0)
     Data_Bank.append(JTAG_Data.copy())
 
     LowJumpRegLoad.set_value(1)
     HighJumpRegLoad.set_value(1)
-    Data_Bank.append(JTAG_Data.copy())
-
-    LowJumpRegLoad.set_value(0)
-    HighJumpRegLoad.set_value(0)
+    Count.set_value(0)
     JumpEnable.set_value(1)
     Data_Bank.append(JTAG_Data.copy())
 
     Count.set_value(1)
     Data_Bank.append(JTAG_Data.copy())
 
-    Count.set_value(0) #now the program counter is at 11111111
-    JumpEnable.set_value(0)
-    Data_Bank.append(JTAG_Data.copy())
-    #
     for signal in Main_Bus:
         signal.set_value(0)
     Data_Bank.append(JTAG_Data.copy())

@@ -46,20 +46,18 @@ def Bus_Write(BUS, VECTOR):
 def read_binaries(file_name):
     if file_name.split(".")[-1] == "bin":
         try:
-            f = open(file_name, 'r')
-            program = f.read()
-            f.close()
+            with open(file_name, 'r') as f:
+                program = f.read()
             instructions = program.split()
         except Exception as e:
             print("Incorrect Input file was specified")
             exit()
     elif file_name.split(".")[-1] == "hex":
-        f = open(file_name, 'r')
-        program = f.read()
-        f.close()
+        with open(file_name, 'r') as f:
+            program = f.read()
         n = 2
         hex = [program[i:i+n] for i in range(0, len(program), n)]
-        numerical = [(int(hexed, 16)) for hexed in hex[0:-1]]
+        numerical = [(int(hexed, 16)) for hexed in hex[:-1]]
         n = 8
         instructions = ['{0:{fill}{width}b}'.format(
             (x + 2**n) % 2**n, fill='0', width=n) for x in numerical]
@@ -172,6 +170,6 @@ def main():
 
 
     print("sucess")
-    print("Data contains: " + str(len(Data_Bank)) + " Transfer Operations")
+    print(f"Data contains: {len(Data_Bank)} Transfer Operations")
 
 main()
